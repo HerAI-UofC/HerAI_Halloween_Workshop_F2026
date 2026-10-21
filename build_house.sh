@@ -92,16 +92,68 @@ sed -i '217s/.*/Day 217: THE SECOND KEY IS [REDACTED]. Tell no one./' $H/library
 # ---------- BASEMENT (mkdir) ----------
 cat > $H/basement/README.txt <<'EOF'
 THE BASEMENT. Dark, damp, and no way out.
-GHOST cackles: "No way out? Then build one. Only builders
-escape my basement."
+GHOST cackles: "Try finding your way out in the dark without a light source."
 
-Dig an escape tunnel: make a new folder called tunnel
-right here in the basement.
-Confirm it exists with  ls
-Then run:  check basement     (no key needed this time)
+  1. Look around with  ls
+     One file here is a PROGRAM. To run a program that
+     sits in your current folder, put ./ in front of its
+     name, like this:  ./name
+  2. Answer GHOST's riddle. If you're right, something
+     appears in the room. Look around again to see what it is
+  3. A flame needs a lantern. But how do we make a lantern? 
+  4. The lantern has been made, but it needs a candle. How do we get this flame into the lantern?
+  5. Check your work with  ls lantern
+  6. Then run:  check basement     (no key needed this time)
 EOF
 
 echo "Empty bottles. Cobwebs. A single sad rat." > $H/basement/wine_rack.txt
+
+cat > $H/basement/riddle.sh <<'SCRIPT'
+#!/bin/bash
+DIR=/home/guest/castle/basement
+
+if [ -f "$DIR/candle.txt" ]; then
+  echo "You already have a candle. Time to build a lantern for it."
+  exit 0
+fi
+
+echo ""
+echo "A voice rises out of the darkness..."
+echo ""
+echo '  "I am tall when I am young, and short when I am old.'
+echo '   I give light, but I fear the wind and the rain.'
+echo '   What am I?"'
+echo ""
+
+tries=0
+while true; do
+  read -r -p "Your answer: " answer
+  ans=$(echo "$answer" | tr 'A-Z' 'a-z' | tr -cd 'a-z ' | xargs)
+  case "$ans" in
+    candle|"a candle"|"the candle")
+      cat > "$DIR/candle.txt" <<'CANDLE'
+       )
+      (_)
+      |=|
+      |_|
+   an unlit candle
+CANDLE
+      echo ""
+      echo "The darkness shudders. A candle drops from the ceiling!"
+      echo "Look around the room again to find it."
+      exit 0
+      ;;
+    *)
+      tries=$((tries + 1))
+      echo "GHOST cackles: wrong... try again."
+      if [ "$tries" -ge 2 ]; then
+        echo "GHOST whispers: it melts as it gives light..."
+      fi
+      ;;
+  esac
+done
+SCRIPT
+chmod 755 $H/basement/riddle.sh
 
 
 # ---------- CELLAR ----------
