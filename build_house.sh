@@ -41,7 +41,7 @@ cat > $H/library/README.txt <<'EOF'
 THE LIBRARY. Thousands of pages of GHOST's diary.
 Somewhere in ghost_diary.txt is the second key.
 Reading every line would take all night. Let the
-computer search for you.  (hint: grep)
+computer search for you.
 Careful, GHOST left some decoys.
 Then run:  check library <KEY>
 EOF
@@ -51,8 +51,27 @@ EOF
     echo "Day $i: the dust settles. The clock ticks. Nothing stirs."
   done
 } > $H/library/ghost_diary.txt
+
+echo "A cookbook. Page 1: boil water. Page 2: panic." > $H/library/book1.txt
+echo "A romance novel. The dude got ghosted. It's terrible." > $H/library/book2.txt
+echo "A picture of a haunted house. Wait, there's someone in the window. It looks like.. you?" > $H/library/book3.txt
+echo "A dictionary. Every definition ends with 'boo thang'." > $H/library/book4.txt
+echo "You found the hidden book! The second key is here... " > $H/library/.forbidden_book
+
+cat > $H/library/blank_page.txt <<'EOF'
+once upon a midnight dReary, while i pondered, weAk and weary,
+oVer many a quaint and curious volume of forgotten lorE--
+    while i nodded, nearly nappiNg, suddenly there came a tapping,
+as of some one gently rapping, rapping at my chamber door.
+"'tis some visitor," i muttered, "tapping at my chamber door--
+            only this and nothing more."
+EOF
+
+# hidden folder "secret room"
+mkdir -p $H/library/.secret_room
+echo "You found the secret room! The key is RAVEN" > $H/library/.secret_room/note.txt
 sed -i '88s/.*/Day 88: lost my keys again. Silly ghost./' $H/library/ghost_diary.txt
-sed -i '217s/.*/Day 217: THE SECOND KEY IS RAVEN. Tell no one./' $H/library/ghost_diary.txt
+sed -i '217s/.*/Day 217: THE SECOND KEY IS [REDACTED]. Tell no one./' $H/library/ghost_diary.txt
 
 # ---------- CELLAR ----------
 cat > $H/cellar/README.txt <<'EOF'
