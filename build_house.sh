@@ -305,8 +305,10 @@ else
   fi
 fi
 if [ -z "\$next" ]; then
+  command -v halloween >/dev/null && halloween 8
   echo ""
   echo "*** GHOST SHUTS DOWN. THE DOORS SWING OPEN. YOU ESCAPED THE GHOST IN THE SHELL! ***"
+  echo "Want to see the show again? Type  halloween  and press Enter (q to quit)."
   echo ""
 else
   echo "Click! The door unlocks. Next stop: cd ~/house/\$next  (then read README.txt)"
@@ -320,5 +322,104 @@ export PS1='\[\e[35m\]guest@hollow-shell\[\e[0m\]:\[\e[33m\]\w\[\e[0m\]\$ '
 cd ~/house/hall
 cat welcome.txt
 EOF
+
+# ---------- HALLOWEEN END ANIMATION ----------
+cat > /usr/local/bin/halloween <<'SCRIPT'
+#!/bin/bash
+# Usage: halloween [seconds]   (no argument = runs until you press q)
+W=60
+ORANGE=$'\033[38;5;208m'; GRN=$'\033[92m'; MAG=$'\033[95m'
+GRY=$'\033[37m'; DIM=$'\033[2m'; RST=$'\033[0m'
+HAT='/\'
+BRIM='/__\'
+BL='           '   # 11 spaces, used to erase a witch
+
+at() { printf '\033[%d;%dH%s' "$1" "$2" "$3"; }
+
+cleanup() { printf '\033[0m'; tput cnorm 2>/dev/null; clear; }
+trap cleanup EXIT
+trap 'exit 0' INT TERM
+tput civis 2>/dev/null
+clear
+
+TITLE="~ HAPPY HALLOWEEN FROM HERAI ~"
+at 1 $(( (W - ${#TITLE}) / 2 + 1 )) "${ORANGE}${TITLE}${RST}"
+at 20 1 "${DIM}$(printf '%*s' "$W" '' | tr ' ' '^')${RST}"
+at 22 1 "${DIM}press q to quit${RST}"
+
+witch() {   # row col color frame
+  local r=$1 c=$2 col=$3 sp='~~~'
+  (( $4 == 1 )) && sp='~*~'
+  at "$r"       "$c" "${col}     ${HAT}    ${RST}"
+  at "$((r+1))" "$c" "${col}    ${BRIM}   ${RST}"
+  at "$((r+2))" "$c" "${col} ${sp}(oo)==>${RST}"
+}
+
+# stars
+STARROWS=(2 16 18)
+declare -a SR SC
+for i in $(seq 0 11); do SR[i]=${STARROWS[RANDOM % 3]}; SC[i]=$((RANDOM % W + 1)); done
+TW=('.' '*' '+' ' ')
+
+# bats: row, column, speed (columns per frame), flying right to left
+BR=(3 15 17 19); BC=(55 40 25 10); BS=(1 2 1 3)
+
+# witches: leader and two followers in a V, flying left to right
+WROW=(8 4 12)
+WOFF=(0 9 9)
+WCOL=("$ORANGE" "$GRN" "$MAG")
+PCOL=(0 0 0)
+L=1
+
+end=$(( SECONDS + ${1:-0} ))
+f=0
+while true; do
+  # bats, wings flapping
+  for i in 0 1 2 3; do
+    at "${BR[i]}" "${BC[i]}" "       "
+    BC[i]=$(( BC[i] - BS[i] ))
+    (( BC[i] < 1 )) && BC[i]=$(( W - 7 ))
+    if (( (f / 2 + i) % 2 == 0 )); then sprite='/\_o_/\'; else sprite='\/_o_\/'; fi
+    at "${BR[i]}" "${BC[i]}" "${GRY}${sprite}${RST}"
+  done
+
+  # witches, brooms flicking sparks
+  (( f % 2 == 0 )) && L=$(( L + 1 ))
+  (( L > W - 10 )) && L=1
+  fr=$(( (f / 2) % 2 ))
+  for k in 0 1 2; do
+    if (( PCOL[k] >= 1 )); then
+      for d in 0 1 2; do at "$(( WROW[k] + d ))" "${PCOL[k]}" "$BL"; done
+    fi
+    c=$(( L - WOFF[k] ))
+    if (( c >= 1 )); then
+      witch "${WROW[k]}" "$c" "${WCOL[k]}" "$fr"
+      PCOL[k]=$c
+    else
+      PCOL[k]=0
+    fi
+  done
+
+  # one star twinkles each frame
+  s=$(( RANDOM % 12 ))
+  at "${SR[s]}" "${SC[s]}" "${TW[RANDOM % 4]}"
+
+  # caption changes every 40 frames
+  if (( f % 40 == 0 )); then
+    case $(( (f / 40) % 2 )) in
+      0) cap="Double, double toil and trouble;" ;;
+      1) cap="Fire burn and cauldron bubble." ;;
+    esac
+    printf '\033[21;1H\033[K%s' "${ORANGE}   ${cap}${RST}"
+  fi
+
+  f=$(( f + 1 ))
+  key=""
+  read -rsn1 -t 0.1 key
+  [[ $key == q || $key == Q ]] && break
+  (( ${1:-0} > 0 && SECONDS >= end )) && break
+done
+SCRIPT
+chmod 755 /usr/local/bin/halloween
 
 chown -R guest:guest /home/guest
