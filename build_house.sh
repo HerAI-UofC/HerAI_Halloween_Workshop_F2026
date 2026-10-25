@@ -49,6 +49,17 @@ The portrait's eyes follow you. GHOST whispers:
   "Look around you... what do you see? Do you see everything?"
 EOF
 
+cat > $H/hall/ghost_notes.txt <<'EOF'
+GHOST'S FAMILY TREE
+GHOST is not the first ghost in the machine...
+
+AI FUN FACT: The first chatbot was a therapist.
+In 1966, MIT researcher Joseph Weizenbaum built ELIZA, a program
+that chatted by turning your own words back into questions, just
+like a therapist would. It was a very simple program.
+
+Try it out here! https://www.masswerk.at/elizabot/ (not a phishing link...)
+EOF
 
 cat > $H/hall/.whisper <<'EOF'
 You found a hidden file. Clever.
@@ -72,6 +83,18 @@ echo "A cookbook. Page 1: boil water. Page 2: panic." > $H/library/book1.txt
 echo "A romance novel. The dude got ghosted. It's terrible." > $H/library/book2.txt
 echo "A picture of a haunted house. Wait, there's someone in the window. It looks like.. you?" > $H/library/book3.txt
 echo "A dictionary. Every definition ends with 'boo thang'." > $H/library/book4.txt
+
+cat > $H/library/book5.txt <<'EOF'
+A damp oceanography book. One page is folded down.
+
+AI FUN FACT: AI is helping us listen to whales.
+Researchers use machine learning to find patterns in whale calls.
+They have discovered that whale groups can have their own
+dialects, a bit like people in different regions.
+
+Read more: https://www.bbc.com/future/article/20240409-the-scientists-learning-to-speak-whale
+EOF
+
 cat > $H/library/.forbidden_book <<'EOF'
 you found the hidden book. the second key hides in the letters that don't belong evermore...
 
@@ -107,6 +130,21 @@ GHOST cackles: "Try finding your way out in the dark without a light source."
 EOF
 
 echo "Empty bottles. Cobwebs. A single sad rat." > $H/basement/wine_rack.txt
+
+cat > $H/basement/pantry_menu.txt <<'EOF'
+GHOST'S PANTRY MENU (please do not eat)
+
+AI FUN FACT: When an AI recipe maker went rogue.
+In 2023, a New Zealand supermarket launched an AI meal planner that
+turned leftover ingredients into recipes. When shoppers typed in
+odd household items, it cheerfully suggested dishes like
+"mosquito-repellent roast potatoes" and a "bleach-infused rice
+surprise". Some of its recipes were actually poisonous.
+The lesson: an AI follows patterns. It doesn't know what is safe
+to eat.
+
+Read more: https://futurism.com/the-byte/supermarket-ai-poison
+EOF
 
 cat > $H/basement/riddle.sh <<'SCRIPT'
 #!/bin/bash
@@ -175,6 +213,17 @@ echo "You found it! The fourth key is SPECTER" > $H/attic/old_trunk/false_bottom
 echo "Nothing here but your reflection. You look tired." > $H/attic/broken_mirror/cracked_glass.txt
 echo "Peanuts. Why?" > $H/attic/dusty_crates/crate1/peanuts.txt
 echo "A rubber chicken. Why?" > $H/attic/dusty_crates/crate2/chicken.txt
+
+cat > $H/attic/dusty_crates/black_box.txt <<'EOF'
+A heavy black box, locked tight. Nobody knows what's inside.
+
+AI FUN FACT: The Black Box Problem.
+Many modern AI systems are so complex that even the engineers who
+built them can't fully explain how they reach a decision. Yet we
+increasingly rely on them in healthcare, law, and finance. That is
+why researchers work on "explainable AI": tools for peeking inside
+the box.
+EOF
 
 # ---------- GRAVEYARD ----------
 cat > $H/graveyard/README.txt <<'EOF'
