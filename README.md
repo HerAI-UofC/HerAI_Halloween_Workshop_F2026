@@ -1,4 +1,4 @@
-# HerAI_Halloween_Workshop_F2026
+# HerAI Halloween Workshop F2026
 Haunted house Linux CLI escape room for Fall 2026 Halloween-themed workshop
 
 A Halloween escape room that teaches Linux and command line skills. Built for

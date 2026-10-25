@@ -110,7 +110,7 @@ echo "Empty bottles. Cobwebs. A single sad rat." > $H/basement/wine_rack.txt
 
 cat > $H/basement/riddle.sh <<'SCRIPT'
 #!/bin/bash
-DIR=/home/guest/castle/basement
+DIR=/home/guest/house/basement
 
 if [ -f "$DIR/candle.txt" ]; then
   echo "You already have a candle. Time to build a lantern for it."
@@ -156,20 +156,6 @@ SCRIPT
 chmod 755 $H/basement/riddle.sh
 
 
-# ---------- CELLAR ----------
-cat > $H/cellar/README.txt <<'EOF'
-THE CELLAR. A cursed chest sits in the corner:
-chest.txt. It is sealed tight.
-Check its permissions with  ls -l  and see why you
-can't open it. Then change them.  (hint: chmod)
-Then run:  check cellar <KEY>
-EOF
-
-
-
-echo "Inside the chest, a lantern glows. The third key is: LANTERN" > $H/cellar/chest.txt
-chmod 000 $H/cellar/chest.txt
-
 # ---------- ATTIC ----------
 cat > $H/attic/README.txt <<'EOF'
 THE ATTIC. Boxes upon boxes upon boxes.
@@ -213,10 +199,14 @@ echo "Lady Vane's last words: the fifth key is EPITAPH" > $H/graveyard/lady_vane
 # ---------- LAIR ----------
 cat > $H/lair/README.txt <<'EOF'
 GHOST'S LAIR. The final room.
-GHOST's memory is corrupted. sightings.log is full of
-junk lines (CORRUPTED#...), blank lines, and repeated
-words. Hidden among them is the ONE entry that
-appears exactly once: GHOST's shutdown phrase.
+GHOST hisses: "You have wandered far. Now read my
+memories, if you dare. One of them is... wrong."
+
+GHOST's memory is stored in training_data.txt. GHOST
+learned from examples, each with a label. One label is
+clearly WRONG, and that mistake is what is corrupting
+GHOST. The odd label is the shutdown phrase.
+Then run:  check lair <SHUTDOWN PHRASE>
 EOF
 
 cat > $H/lair/training_data.txt <<'EOF'
@@ -235,24 +225,29 @@ example: a candle flickering in an empty room | label: SPOOKY
 EOF
 
 # ---------- CHECK COMMAND (stores hashes only) ----------
-cat > /usr/local/bin/check <<EOF
 #!/bin/bash
+cat > /usr/local/bin/check <<EOF
 room="\$1"
 guess=\$(echo -n "\$2" | tr 'A-Z' 'a-z' | sha256sum | cut -d' ' -f1)
 case "\$room" in
   hall)   want="$(h cobweb)";         next="library" ;;
   library) want="$(h raven)";          next="basement"  ;;
-  basement) want="";                     next="atticr"  ;;
+  basement) want="";                     next="attic"  ;;
   attic)   want="$(h specter)";        next="graveyard"    ;;
   graveyard)   want="$(h epitaph)";        next="lair"    ;;
   lair)    want="$(h midnight-ember)"; next=""        ;;
   *) echo "Usage: check <room> <key>   e.g. check hall SOMEKEY"; exit 1 ;;
 esac
 if [ "\$room" = "basement" ]; then
-  if [ ! -d /home/guest/castle/basement/tunnel ]; then
-    echo "The wall stays solid. Dig a tunnel first: make a folder called 'tunnel' in the basement."
+  if [ -f /home/guest/house/basement/lantern ]; then
+    echo "'lantern' is a file, not a folder. A lantern has to be built with mkdir FIRST. Ask a facilitator to reset your castle."
     exit 1
   fi
+  if [ ! -s /home/guest/house/basement/lantern/candle.txt ]; then
+    echo "It is still pitch black down here. Earn a candle, build a lantern, and put the candle inside it."
+    exit 1
+  fi
+  echo "The candle flickers to life inside the lantern. A hidden passage glows in the wall!"
 else
   guess=\$(echo -n "\$2" | tr 'A-Z' 'a-z' | sha256sum | cut -d' ' -f1)
   if [ "\$guess" != "\$want" ]; then
