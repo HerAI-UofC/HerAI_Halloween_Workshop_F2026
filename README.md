@@ -1,10 +1,9 @@
-# HerAI Halloween Workshop F2026
+# HerAI Halloween Workshop F2026 🎃
 Haunted house Linux CLI escape room for Fall 2026 Halloween-themed workshop
 
-A Halloween escape room that teaches Linux and command line skills. Built for
-**Halloween with HerAI** by HerAI (Women in AI and Machine Learning).
+A Halloween escape room that teaches Linux and command line skills. Built by HerAI 🧙‍♀️
 
-Teams are trapped in a haunted house run by a Ghost AI. The only way out is through the terminal: explore
+Teams are trapped in a haunted house run by a Ghost AI. The only way out is through the terminal. Explore
 rooms, hunt for keys, and shut GHOST down before midnight.
 
 
@@ -73,12 +72,8 @@ Delete the server afterward to avoid ongoing charges.
 
 - Teams run as an unprivileged `guest` user inside an isolated container, with
   CPU, memory, and process limits.
-- `ttyd` login uses HTTP basic auth over plain HTTP by default. Passwords are
-  throwaway and only unlock a sandbox, but put Caddy or a Cloudflare Tunnel in
-  front for HTTPS if you need it.
-- `teams.csv` contains live passwords. It is git-ignored. Never commit it.
-- Answer keys live in the house files, so teams who run `grep -r` could find
-  them early. Remind teams to stay within their current room.
+- `ttyd` login uses HTTP basic auth over plain HTTP by default
+- `teams.csv` contains live passwords and is in .gitignore
 
 ## Adding Your Own Rooms
 
@@ -88,9 +83,6 @@ Delete the server afterward to avoid ongoing charges.
    to store the hash instead of the plain text.
 4. Rebuild with `./launch_teams.sh <N>`.
 
-## Facilitator Guide
-
-The answer key, hints, and event timeline are in `FACILITATOR.md`.
 
 ## License
 
